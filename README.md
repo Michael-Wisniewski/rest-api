@@ -54,7 +54,7 @@ RESTful Api
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:** ```JSONasPerl 
+    **Content:** ```jsonasperl 
                     { 
                       title : "Math exam",
                       author : "Michael Bloom", 
