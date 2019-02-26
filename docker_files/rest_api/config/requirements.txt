@@ -1,0 +1,10 @@
+Django
+uwsgi
+psycopg2
+pytz
+djangorestframework
+djangorestframework_jwt
+pytest
+pytest-django
+pytest-cov
+mixer 
