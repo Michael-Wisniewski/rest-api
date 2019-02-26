@@ -1,1 +1,83 @@
 # rest-api
+
+
+
+
+
+
+
+
+
+### 3. Application stack overview
+
+General
+
+| Type        | Technologies           |
+| ------------- |:-------------:|
+| Version control system  | Git, GitFlow |
+| Virtual enviromnent | Docker and Docker-Compose |
+
+RESTful Api
+
+| Type        | Technologies           |
+| ------------- |:-------------:|
+| Servers | Nginx, uWsgi |
+| Database | PostgreSQL |
+| Programming language | Python v.3.6 |
+| Used libraries | Django, Django REST |
+| Debug tools | Postman |
+| Tests | Pytest, Pytest-Django, Pytest-Cov, Mixer, RequestFactory |
+
+
+
+
+**Show schoolboy exam list.**
+----
+  Returns json data with information shortcuts about all availables exams.
+
+* **URL**
+
+  http://localhost/v1/schoolboy/exam_list/
+
+* **Method:**
+
+  `GET`
+  
+*  **URL Params**
+
+   None
+
+* **Data Params**
+
+  None
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** ```JSONasPerl 
+                    { 
+                      title : "Math exam",
+                      author : "Michael Bloom", 
+                      difficulty: "Easy", 
+                      url: "http://localhost/v1/schoolboy/new_exam/1/" 
+                    }
+                ```
+
+    OR
+    
+  * **Code:** 204 <br />
+    **Content:** ```JSONasPerl 
+                    { 
+                      message : "There are no exam sheets avalible at this moment."
+                    }
+                ```
+ 
+* **Error Response:**
+
+  * **Code:** 404 NOT FOUND <br />
+    **Content:** `{ tudu }`
+
+  OR
+
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:** `{ error : "You are unauthorized to make this request." }`
