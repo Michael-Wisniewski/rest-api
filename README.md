@@ -54,7 +54,7 @@ RESTful Api
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:** ```json 
+    **Content:**```json 
                     { 
                       title : "Math exam",
                       author : "Michael Bloom", 
@@ -66,7 +66,7 @@ RESTful Api
     OR
     
   * **Code:** 204 <br />
-    **Content:** ```json
+    **Content:**```json
                     { 
                       message : "There are no exam sheets avalible at this moment."
                     }
