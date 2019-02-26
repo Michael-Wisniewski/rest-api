@@ -37,7 +37,7 @@ RESTful Api
 
 * **URL**
 
-  http://localhost/v1/schoolboy/exam_list/
+  localhost/v1/schoolboy/exam_list/
 
 * **Method:**
 
@@ -54,7 +54,7 @@ RESTful Api
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:** ```jsonasperl 
+    **Content:** ```json 
                     { 
                       title : "Math exam",
                       author : "Michael Bloom", 
@@ -66,7 +66,7 @@ RESTful Api
     OR
     
   * **Code:** 204 <br />
-    **Content:** ```JSONasPerl 
+    **Content:** ```json
                     { 
                       message : "There are no exam sheets avalible at this moment."
                     }
