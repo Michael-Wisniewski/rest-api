@@ -54,30 +54,30 @@ RESTful Api
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:**```json 
-                    { 
-                      title : "Math exam",
-                      author : "Michael Bloom", 
-                      difficulty: "Easy", 
-                      url: "http://localhost/v1/schoolboy/new_exam/1/" 
-                    }
-                ```
+    **Content:**
+    ```json 
+        [
+            { 
+                title : "Math exam",
+                author : "Michael Bloom", 
+                difficulty: "Easy", 
+                url: "http://localhost/v1/schoolboy/new_exam/1/" 
+            },
+            { 
+                title : "Math exam",
+                author : "Michael Bloom", 
+                difficulty: "Easy", 
+                url: "http://localhost/v1/schoolboy/new_exam/1/" 
+            }
+        ]
+    ```
 
     OR
     
   * **Code:** 204 <br />
-    **Content:**```json
-                    { 
-                      message : "There are no exam sheets avalible at this moment."
-                    }
-                ```
- 
-* **Error Response:**
-
-  * **Code:** 404 NOT FOUND <br />
-    **Content:** `{ tudu }`
-
-  OR
-
-  * **Code:** 401 UNAUTHORIZED <br />
-    **Content:** `{ error : "You are unauthorized to make this request." }`
+    **Content:**
+    ```json
+        { 
+            message : "There are no exam sheets avalible at this moment."
+        }
+    ```
