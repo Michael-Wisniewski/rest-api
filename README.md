@@ -55,7 +55,7 @@ RESTful Api
 
   * **Code:** 200 <br />
     **Content:**
-    ```json 
+    ```JSONasPerl 
         [
             { 
                 title : "Math exam",
@@ -64,10 +64,10 @@ RESTful Api
                 url: "http://localhost/v1/schoolboy/new_exam/1/" 
             },
             { 
-                title : "Math exam",
-                author : "Michael Bloom", 
-                difficulty: "Easy", 
-                url: "http://localhost/v1/schoolboy/new_exam/1/" 
+                title : "English exam",
+                author : "John Smith", 
+                difficulty: "Medium", 
+                url: "http://localhost/v1/schoolboy/new_exam/2/" 
             }
         ]
     ```
