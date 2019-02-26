@@ -1,0 +1,10 @@
+[run]
+source = /rest_api/src/api/
+omit = */tests/*
+       */migrations/*
+       *__init__.py*
+       *admin.py*
+       *test_*.py*
+       *apps.py*
+[html]
+directory = /rest_api/static/tests/coverage
