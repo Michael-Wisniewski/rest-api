@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  rest_api:
+    environment:
+      PRODUCTION: 'false'
+
+  database:
+    ports:
+      - 5432:5432

@@ -1,0 +1,4 @@
+*.temp
+*.pyc
+*.log
+/databases/main_db/
