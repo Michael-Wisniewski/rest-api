@@ -7,4 +7,5 @@ djangorestframework_jwt
 pytest
 pytest-django
 pytest-cov
-mixer 
+mixer
+jsonschema
