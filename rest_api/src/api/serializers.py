@@ -1,7 +1,8 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from .models import ExamSheet, Question, Answer
+from .models import ExamSheet, Question, Answer, ExamResult
 from django.urls import reverse
 from jsonschema import validate
+from django.core.exceptions import ObjectDoesNotExist
 
 class SchoolboyExamListSerializer(ModelSerializer):
     author = SerializerMethodField()
@@ -53,7 +54,7 @@ class SchoolboyExamSerializer(ModelSerializer):
         model = ExamSheet
         fields = ['id', 'title', 'version', 'questions']
 
-class NewExamResultSerializer(object):
+class ExamResultSerializer(object):
     _is_valid = False
     _error_msg, _error_code, _data, _user = (None,)*4
     _schema = {
@@ -67,14 +68,14 @@ class NewExamResultSerializer(object):
                                    }
                 },
                 "required":[
-                    "examsheet_id",
-                    "examsheet_version",
-                    "answer_ids"
+                    "id",
+                    "version",
+                    "answers"
                 ],
                 "additionalProperties":False
             }
 
-    def __init__(self, **data, _user):
+    def __init__(self, user, **data):
         self._data = data
         self._user = user
 
@@ -88,14 +89,14 @@ class NewExamResultSerializer(object):
             return False 
     
         try:
-            examsheet = ExamSheet.objects.get(pk=self._data['examsheet_id']) 
+            examsheet = ExamSheet.objects.get(pk=self._data['id']) 
             
-            if examsheet.version != int(self._data['examsheet_version']):
+            if examsheet.version != int(self._data['version']):
                 self._error_msg = 'Used exam sheet is out of date.'
                 self._error_code = 409
                 return False
-            elif not examsheet.avalible:
-                self._error_msg = 'Used exam sheet is no loger avalible.'
+            elif not examsheet.available:
+                self._error_msg = 'Used exam sheet is no loger available.'
                 self._error_code = 410
                 return False
             elif examsheet.deleted:
@@ -105,10 +106,10 @@ class NewExamResultSerializer(object):
             else:
                 questions_to_answer = examsheet.questions
 
-                if questions_to_answer.count() != len(self._data['answer_ids']) or\
-                   questions_to_answer.exclude(answers__id__in=self._data['answer_ids']).count():
+                if questions_to_answer.count() != len(self._data['answers']) or\
+                   questions_to_answer.exclude(answers__id__in=self._data['answers']).count():
                     
-                    self._error_msg = 'Too many or too less answers.'
+                    self._error_msg = 'Wrong number of answers or answers do not correspond to questions.'
                     self._error_code = 406
                     return False   
                 else:
@@ -119,12 +120,12 @@ class NewExamResultSerializer(object):
             self._error_code = 406
             return False
 
-    def get_error_response(self):
+    def get_errors(self):
         return {'data': {'message': self._error_msg}, 'status': self._error_code}
 
     def save(self):
         earned_points, points_to_get = (0,)*2
-        examsheet = ExamSheet.objects.get(pk=self._data['examsheet_id'])
+        examsheet = ExamSheet.objects.get(pk=self._data['id'])
 
         questions_to_answer = examsheet.questions.all()
 
@@ -132,7 +133,7 @@ class NewExamResultSerializer(object):
             points_to_get += question_to_answer.points
 
             for answer in question_to_answer.answers.all():
-                if answer.is_correct and (answer.id in self._data['answer_ids']):
+                if answer.is_correct and (answer.id in self._data['answers']):
                     earned_points += question_to_answer.points
 
         exam_result = ExamResult(author=self._user, exam=examsheet, earned_points=earned_points, points_to_get=points_to_get)

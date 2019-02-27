@@ -73,9 +73,7 @@ RESTful Api
   * **Code:** 204 <br />
     **Content:**
     ```json
-        { 
-            "message" : "There are no exam sheets avalible at this moment."
-        }
+        { "message" : "There are no exam sheets avalible at this moment." }
     ```
 
 **The schoolboy writes a new exam**
@@ -127,9 +125,7 @@ RESTful Api
   * **Code:** 404 <br />
     **Content:**
     ```json
-        { 
-            "message" : "The exam sheet does not exist."
-        }
+        { "message" : "The exam sheet does not exist." }
     ```
 
     OR
@@ -137,9 +133,7 @@ RESTful Api
   * **Code:** 404 <br />
     **Content:**
     ```json
-        { 
-            "message" : "This exam is not avalible at this moment."
-        }
+        { "message" : "This exam is not avalible at this moment." }
     ```
 
     OR
@@ -147,9 +141,7 @@ RESTful Api
   * **Code:** 410 <br />
     **Content:**
     ```json
-        { 
-            "message" : "This exam is no longer avalible."
-        }
+        { "message" : "This exam is no longer avalible." }
     ```
 * **POST request:**
 
@@ -164,8 +156,8 @@ RESTful Api
 
     **Required:**
  
-    `id=[integer]` - exam sheet id
-    `version=[integer]` - version of exam sheet
+    `id=[integer]` - exam sheet id<br />
+    `version=[integer]` - version of exam sheet<br />
     `answers=[type=[array], items=[integer]]` - ids of answers
 * **Success POST Response:**
 
@@ -179,9 +171,7 @@ RESTful Api
   * **Code:** 406 <br />
     **Content:**
     ```json
-        { 
-            "message" : "Corrupted data."
-        }
+        { "message" : "Corrupted data." }
     ```
 
     OR
@@ -189,9 +179,7 @@ RESTful Api
   * **Code:** 406 <br />
     **Content:**
     ```json
-        { 
-            "message" : "The exam sheet does not exist."
-        }
+        { "message" : "The exam sheet does not exist." }
     ```
 
     OR
@@ -199,9 +187,7 @@ RESTful Api
   * **Code:** 406 <br />
     **Content:**
     ```json
-        { 
-            "message" : "Too many or too less answers."
-        }
+        { "message" : "Wrong number of answers or answers do not correspond to questions." }
     ```
 
     OR
@@ -209,9 +195,7 @@ RESTful Api
   * **Code:** 409 <br />
     **Content:**
     ```json
-        { 
-            "message" : "Used exam sheet is out of date."
-        }
+        { "message" : "Used exam sheet is out of date." }
     ```
 
     OR
@@ -219,9 +203,7 @@ RESTful Api
   * **Code:** 410 <br />
     **Content:**
     ```json
-        { 
-            "message" : "Used exam sheet is no loger avalible."
-        }
+        { "message" : "Used exam sheet is no loger avalible." }
     ```
 
     OR
@@ -229,8 +211,6 @@ RESTful Api
   * **Code:** 410 <br />
     **Content:**
     ```json
-        { 
-            "message" : "Used exam sheet was deleted."
-        }
+        { "message" : "Used exam sheet was deleted." }
     ```
   

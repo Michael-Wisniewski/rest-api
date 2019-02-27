@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from .models import ExamSheet
-from .serializers import SchoolboyExamListSerializer, SchoolboyExamSerializer
+from .serializers import SchoolboyExamListSerializer, SchoolboyExamSerializer, ExamResultSerializer
 from rest_framework.renderers import JSONRenderer
 from .validators import SchoolboyExamSheetValidator
 from rest_framework.response import Response
@@ -29,9 +29,8 @@ class SchoolboyNewExamView(APIView):
         else:
             return Response(**examsheet_validator.get_errors())
 
-    def post(self,request):
-        exam_result_serializer = ExamResultSerializer(**request.data, request.user)
-
+    def post(self,request, *args, **kwargs):
+        exam_result_serializer = ExamResultSerializer(request.user, **request.data)
         if  exam_result_serializer.is_valid():
             return Response(**exam_result_serializer.save())
         else:

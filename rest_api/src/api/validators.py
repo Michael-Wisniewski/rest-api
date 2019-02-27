@@ -9,10 +9,10 @@ class SchoolboyExamSheetValidator(object):
         try:
             self._examsheet = ExamSheet.objects.get(pk=pk)
             if self._examsheet.deleted:
-                self._error_msg = 'This exam is no longer avalible.'
+                self._error_msg = 'This exam is no longer available.'
                 self._error_code = 410
             elif not self._examsheet.available:
-                self._error_msg = 'This exam is not avalible at this moment.'
+                self._error_msg = 'This exam is not available at this moment.'
                 self._error_code = 404
             else:
                 self._is_valid = True
