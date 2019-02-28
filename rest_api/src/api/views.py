@@ -1,10 +1,16 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from .models import ExamSheet
-from .serializers import SchoolboyExamListSerializer, SchoolboyExamSerializer, ExamResultSerializer
+from .serializers import *
 from rest_framework.renderers import JSONRenderer
 from .validators import SchoolboyExamSheetValidator
 from rest_framework.response import Response
+
+
+##
+from django.contrib.auth.models import User
+
+
 
 class SchoolboyExamListView(ListAPIView):
     queryset = ExamSheet.availables.all()
@@ -35,3 +41,32 @@ class SchoolboyNewExamView(APIView):
             return Response(**exam_result_serializer.save())
         else:
             return Response(**exam_result_serializer.get_errors())
+
+class TeacherExamListView(ListAPIView):
+    queryset = None
+    serializer_class = TeacherExamListSerializer
+    renderer_classes = [JSONRenderer]
+
+    def list(self, request, *args, **kwargs):
+
+        #self.queryset = request.user.exam_sheets.filter(deleted=False)
+        self.queryset = ExamSheet.objects.filter(deleted=False)
+
+        if not self.get_queryset().exists():
+            return Response({'message': 'You did not add any exam sheets.'}, status=200)
+        else:
+            return super(TeacherExamListView, self).list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        ##
+        user = User.objects.get(pk=1)
+
+        examsheet_serializer = NewExamSheetSerializer(data=request.data, context={'author': user})
+        if examsheet_serializer.is_valid():
+            examsheet_serializer.save()
+            return Response({'message': 'Empty examsheet added.'}, status=200)
+        else:
+            return Response(examsheet_serializer.errors, status=406)
+
+class TeacherExamEditView(APIView):
+    pass

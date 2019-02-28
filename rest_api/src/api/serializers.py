@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer, SerializerMethodField, DateTimeField
 from .models import ExamSheet, Question, Answer, ExamResult
 from django.urls import reverse
 from jsonschema import validate
@@ -61,11 +61,11 @@ class ExamResultSerializer(object):
                 "type": "object",
                 "properties": {
                     "id": {"type" : "number"},
-                    "version": {"type" : "number"},
+                    "version": { "type" : "number" },
                     "answers": {
                                     "type": "array",
                                     "items": { "type": "number" }
-                                   }
+                                }
                 },
                 "required":[
                     "id",
@@ -140,3 +140,36 @@ class ExamResultSerializer(object):
         exam_result.save()
         return {'data': {'message': 'Your score is: '+ str(exam_result.get_mark) + '%'}, 'status': 200}
     
+class TeacherExamListSerializer(ModelSerializer):
+    url = SerializerMethodField()
+    filled = SerializerMethodField()
+    passed = SerializerMethodField()
+    updated = DateTimeField(format="%Y-%m-%d")
+
+    class Meta:
+        model = ExamSheet
+        fields = ('title', 'available', 'version', 'updated', 'filled', 'passed', 'url')
+
+    def get_url(self, obj):
+        url = self.context['request'].build_absolute_uri(reverse('api:examsheet_edit', kwargs={'pk': obj.id}))
+        return url
+
+    def get_filled(self, obj):
+        return obj.filled_exam_sheets.count()
+
+    def get_passed(self, obj):
+        count = 0
+        for written_exam in obj.filled_exam_sheets.all():
+            if written_exam.get_mark > 50:
+                count +=1
+        return count
+
+class NewExamSheetSerializer(ModelSerializer):
+    class Meta:
+        model = ExamSheet
+        fields = '__all__'
+
+    def save(self, **kwargs):
+        self._validated_data['version'] = 0
+        self.validated_data['author'] = self.context['author']
+        super(NewExamSheetSerializer, self).save(**kwargs)
