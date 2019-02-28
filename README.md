@@ -367,3 +367,75 @@ RESTful Api
     ```json
         { "title": ["exam sheet with this title already exists."] }
     ```
+####Teacher edits exam sheet
+----
+  Returns exam sheet in json data format. After receiving the data all information about exam can be updated.
+
+* **URL**
+
+  localhost/v1/teacher/exam_edit/:id/
+
+* **Method:**
+
+  `GET` | `POST`
+  
+*  **URL Params**
+
+  **Required:**
+ 
+  `id=[integer]` - exam sheet id
+
+* **Success GET Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```json 
+        {
+            "id": 1,
+            "title": "Math exam",
+            "available": true,
+            "version": 3,
+            "questions": [
+                {
+                    "id": 1,
+                    "text": "How much is two plus two?",
+                    "points": 3,
+                    "answers": [
+                        {
+                            "id": 1,
+                            "is_correct": true,
+                            "text": "Four"
+                        },
+                        {
+                            "id": 2,
+                            "is_correct": false,
+                            "text": "three"
+                        }
+                    ]
+                }
+            ]
+        }
+    ```
+* **Error GET Response:**
+
+  * **Code:** 404 <br />
+    **Content:**
+    ```json
+        { "message" : "The exam sheet does not exist." }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "message" : "You do not have rights to edit this examsheet." }
+    ```
+
+    OR
+
+  * **Code:** 410 <br />
+    **Content:**
+    ```json
+        { "message" : "This exam is no longer available." }
+    ```
