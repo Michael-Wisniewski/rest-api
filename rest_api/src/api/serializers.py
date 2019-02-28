@@ -151,7 +151,7 @@ class TeacherExamListSerializer(ModelSerializer):
         fields = ('title', 'available', 'version', 'updated', 'filled', 'passed', 'url')
 
     def get_url(self, obj):
-        url = self.context['request'].build_absolute_uri(reverse('api:examsheet_edit', kwargs={'pk': obj.id}))
+        url = self.context['request'].build_absolute_uri(reverse('api:exam_edit', kwargs={'pk': obj.id}))
         return url
 
     def get_filled(self, obj):
@@ -173,3 +173,22 @@ class NewExamSheetSerializer(ModelSerializer):
         self._validated_data['version'] = 0
         self.validated_data['author'] = self.context['author']
         super(NewExamSheetSerializer, self).save(**kwargs)
+
+class TeacherAnswerSerializer(ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ['id', 'is_correct', 'text']
+
+class TeacherQuestionSerializer(ModelSerializer):
+    answers = TeacherAnswerSerializer(many=True)
+
+    class Meta:
+        model = Question
+        fields = ['id', 'text', 'points', 'answers']
+
+class TeacherExamSerializer(ModelSerializer):
+    questions = TeacherQuestionSerializer(many=True)
+
+    class Meta:
+        model = ExamSheet
+        fields = ('id', 'title', 'available', 'version', 'questions')

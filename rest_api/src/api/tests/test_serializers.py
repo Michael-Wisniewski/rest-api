@@ -144,7 +144,7 @@ class TestTeacherExamListSerializer(TestCase):
 
     def test_exam_sheet_shortcut(self):
         serialized_data = self.serializer.data
-        path = reverse('api:examsheet_edit', kwargs={'pk': self.examsheet.id})
+        path = reverse('api:exam_edit', kwargs={'pk': self.examsheet.id})
         request = RequestFactory().get(path)
 
         self.assertEqual(serialized_data['title'], self.examsheet.title)

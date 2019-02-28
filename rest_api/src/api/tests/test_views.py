@@ -30,7 +30,7 @@ class TestSchoolboyExamListView(TestCase):
     def test_get_empty_list(self):
         response = SchoolboyExamListView().as_view()(self.request).render()
         message = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(message['message'], 'There are no exam sheets avalible at this moment.')
+        self.assertEqual(message['message'], 'There are no exam sheets available at this moment.')
 
     def test_get_examsheet_list(self):
         teacher = mixer.blend(User, is_staff=True)
@@ -125,9 +125,6 @@ class TestTeacherExamListView(TestCase):
         request.user = self.teacher
         response = TeacherExamListView().as_view()(request)
         self.assertEqual(response.status_code, 406)
-
-    
-
         
 
     

@@ -3,8 +3,11 @@ from rest_framework.views import APIView
 from .models import ExamSheet
 from .serializers import *
 from rest_framework.renderers import JSONRenderer
-from .validators import SchoolboyExamSheetValidator
+from .validators import SchoolboyExamSheetValidator, TeacherExamSheetValidator
 from rest_framework.response import Response
+
+#
+from django.contrib.auth.models import User
 
 class SchoolboyExamListView(ListAPIView):
     queryset = ExamSheet.availables.all()
@@ -13,7 +16,7 @@ class SchoolboyExamListView(ListAPIView):
     
     def list(self, request, *args, **kwargs):
         if not self.get_queryset().exists():
-            return Response({'message': 'There are no exam sheets avalible at this moment.'}, status=204)
+            return Response({'message': 'There are no exam sheets available at this moment.'}, status=204)
         else:
             return super(SchoolboyExamListView, self).list(request, *args, **kwargs)
 
@@ -57,4 +60,17 @@ class TeacherExamListView(ListAPIView):
             return Response(examsheet_serializer.errors, status=406)
 
 class TeacherExamEditView(APIView):
-    pass
+    renderer_classes = [JSONRenderer]
+    
+    def get(self, request, pk):
+        examsheet_validator = TeacherExamSheetValidator(pk, request.user)
+        if  examsheet_validator.is_valid():
+            examsheet_object = examsheet_validator.get_examsheet()
+            examsheet_serializer = TeacherExamSerializer(examsheet_object)
+            return Response(examsheet_serializer.data)
+        else:
+            return Response(**examsheet_validator.get_errors())
+
+    def post(self, request, *args, **kwargs):
+
+        user=User.objects.get(pk=1)
