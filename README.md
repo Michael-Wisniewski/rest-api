@@ -71,7 +71,7 @@ It was created in accordance with the RESTful application program interface rule
         - 60% score passes the exam
         - exam sheet can only be archived, not deleted
         - exams are single choice tests
-        - exam sheets are versioned so exam result can not be saved<br />
+        - exam sheets are versioned so exam result can not be saved
           if during the filling process, teacher makes any changes to it
 
 ### 3. Application stack overview
@@ -80,8 +80,8 @@ General
 
 | Type        | Technologies           |
 | ------------- |:-------------:|
-| Version control system  | Git, GitFlow |
-| Virtual enviromnent | Docker and Docker-Compose |
+| Version control system  | Git, Git Flow |
+| Virtual enviromnent | Docker, Docker-Compose |
 
 RESTful Api
 
@@ -94,10 +94,9 @@ RESTful Api
 | Debug tools | Postman |
 | Tests | Pytest, Pytest-Django, Pytest-Cov, Mixer, RequestFactory |
 
+### 4. Api documentation
 
-
-
-**Show schoolboy exam list.**
+####Show schoolboy exam list.####
 ----
   Returns json data with information shortcuts about all availables exams.
 
