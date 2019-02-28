@@ -95,9 +95,9 @@ RESTful Api
 
 ### 4. Api documentation
 
-#### Show schoolboy exam list.
+#### Schoolboy exam list.
 ----
-  Returns json data with information shortcuts about all availables exams.
+  Returns json data with information shortcut about all availables exams.
 
 * **URL**
 
@@ -140,7 +140,7 @@ RESTful Api
         { "message" : "There are no exam sheets avalible at this moment." }
     ```
 
-####The schoolboy writes a new exam
+####Schoolboy writes a new exam
 ----
   Returns blank exam in json data format. After receiving the data with answers it sends back the exam score.
 
@@ -277,4 +277,93 @@ RESTful Api
     ```json
         { "message" : "Used exam sheet was deleted." }
     ```
+
+####  Teacher exam sheet list.
+----
+  Returns json data with information shortcut about exam sheets. New blank exam sheet can be created by POST method.
+
+* **URL**
+
+  localhost/v1/teacher/examsheet_list/
+
+* **Method:**
+
+  `GET` | `POST`
   
+*  **URL Params**
+
+   None
+
+* **Success GET Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```json 
+        [
+            {
+                "title": "Math exam",
+                "available": true,
+                "version": 13,
+                "updated": "2019-02-26",
+                "filled": 10,
+                "passed": 5,
+                "url": "http://localhost/v1/teacher/examsheet_edit/2/"
+            },
+            {
+                "title": "English exam",
+                "available": true,
+                "version": 5,
+                "updated": "2019-02-26",
+                "filled": 4,
+                "passed": 3,
+                "url": "http://localhost/v1/teacher/examsheet_edit/1/"
+            }
+        ]
+    ```
+
+    OR
+    
+  * **Code:** 200 <br />
+    **Content:**
+    ```json
+        { "message": "You did not add any exam sheets." }
+    ```
+* **POST request:**
+
+  * **Content:**
+    ```json
+        { "title": "Math exam" }
+    ```
+* **Success POST Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```json 
+        {
+            "message": "Empty examsheet added.",
+             "id": 12
+        }
+    ```
+* **Error POST Response:**
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "title": ["This field is required."] }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "title": ["This field may not be blank."] }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "title": ["exam sheet with this title already exists."] }
+    ```
