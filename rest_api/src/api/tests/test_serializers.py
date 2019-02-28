@@ -2,7 +2,7 @@ from mixer.backend.django import mixer
 import pytest
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import User
-from api.models import ExamSheet, Question, Answer
+from api.models import ExamSheet, Question, Answer, ExamResult
 from api.serializers import *
 from  django.urls import reverse
 
@@ -124,3 +124,83 @@ class TestExamResultSerializer(TestCase):
         user = User.objects.create(is_staff=False)
         response = serializer.save()        
         self.assertEqual(response['data']['message'], 'Your score is: 100%')
+
+@pytest.mark.django_db
+class TestTeacherExamListSerializer(TestCase):
+    
+    def setUp(cls):
+        super(TestTeacherExamListSerializer, cls).setUp()
+        teacher = mixer.blend(User, is_staff=True)
+        cls.schoolboy = mixer.blend(User, is_staff=False)
+        cls.examsheet = mixer.blend(ExamSheet, author=teacher, available=True)
+        mixer.blend(ExamResult, author=cls.schoolboy, exam=cls.examsheet, earned_points=8, points_to_get=10)
+        path = reverse('api:examsheet_list')
+        request = RequestFactory().get(path)
+        cls.serializer = TeacherExamListSerializer(cls.examsheet, context={'request': request})
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def test_exam_sheet_shortcut(self):
+        serialized_data = self.serializer.data
+        path = reverse('api:examsheet_edit', kwargs={'pk': self.examsheet.id})
+        request = RequestFactory().get(path)
+
+        self.assertEqual(serialized_data['title'], self.examsheet.title)
+        self.assertEqual(serialized_data['available'], self.examsheet.available)
+        self.assertEqual(serialized_data['version'], self.examsheet.version)
+        self.assertEqual(serialized_data['updated'], self.examsheet.updated.strftime('%Y-%m-%d'))
+        self.assertEqual(serialized_data['filled'], 1)
+        self.assertEqual(serialized_data['passed'], 1)
+        self.assertEqual(serialized_data['url'], request.build_absolute_uri())
+
+    def test_exam_pass_rate(self):
+        mixer.blend(ExamResult, author=self.schoolboy, exam=self.examsheet, earned_points=5, points_to_get=10)
+        serialized_data = self.serializer.data
+        self.assertEqual(serialized_data['filled'], 2)
+        self.assertEqual(serialized_data['passed'], 1)
+
+@pytest.mark.django_db
+class TestTeacherNewExamSheetSerializer(TestCase):
+    
+    def setUp(cls):
+        super(TestTeacherNewExamSheetSerializer, cls).setUp()
+        cls.teacher = mixer.blend(User, is_staff=True)
+        cls.data = {}
+        cls.data['title'] = 'Exam title'
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def test_new_examsheet_save(self):
+        serializer = NewExamSheetSerializer(data=self.data, context={'author': self.teacher})
+        serializer.is_valid()
+        serializer.save()
+        newest_examsheet = ExamSheet.objects.last()
+        self.assertEqual(newest_examsheet.id, serializer.data['id'])
+
+    def test_empty_data(self):
+        del self.data['title']
+        serializer = NewExamSheetSerializer(data=self.data, context={'author': self.teacher})
+        serializer.is_valid()
+        errors = serializer.errors
+        self.assertEqual(errors['title'][0], 'This field is required.')
+
+    def test_empty_title(self):
+        self.data['title'] = ''
+        serializer = NewExamSheetSerializer(data=self.data, context={'author': self.teacher})
+        serializer.is_valid()
+        errors = serializer.errors
+        self.assertEqual(errors['title'][0], 'This field may not be blank.')
+
+    def test_doubled_title(self):
+        teacher = mixer.blend(User, is_staff=True)
+        examsheet = mixer.blend(ExamSheet, author=teacher)
+        self.data['title'] = examsheet.title
+        serializer = NewExamSheetSerializer(data=self.data, context={'author': self.teacher})
+        serializer.is_valid()
+        errors = serializer.errors
+        self.assertEqual(errors['title'][0], 'exam sheet with this title already exists.')
+

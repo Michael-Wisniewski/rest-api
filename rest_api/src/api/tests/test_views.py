@@ -60,7 +60,7 @@ class TestSchoolboyNewExamView(TestCase):
 
     def test_get_exam(self):
         request = self.factory.get(self.path)
-        response = SchoolboyNewExamView().as_view()(request, pk=self.exam.id).render()
+        response = SchoolboyNewExamView().as_view()(request, pk=self.exam.id)
         self.assertEqual(response.status_code, 200)
 
     def test_get_invalid_exam(self):
@@ -74,12 +74,60 @@ class TestSchoolboyNewExamView(TestCase):
         json_data = json.dumps(self.data)
         request = self.factory.post(self.path, json_data, content_type='application/json')
         request.user = mixer.blend(User, is_staff=False)
-        response = SchoolboyNewExamView().as_view()(request, pk=self.exam.id).render()
+        response = SchoolboyNewExamView().as_view()(request, pk=self.exam.id)
         self.assertEqual(response.status_code, 200)
 
     def test_post_unvalid_exam(self):
         del self.data['answers']
         json_data = json.dumps(self.data)
         request = self.factory.post(self.path, json_data, content_type='application/json')
-        response = SchoolboyNewExamView().as_view()(request, pk=self.exam.id).render()
+        response = SchoolboyNewExamView().as_view()(request, pk=self.exam.id)
         self.assertEqual(response.status_code, 406)
+
+@pytest.mark.django_db
+class TestTeacherExamListView(TestCase):
+
+    def setUp(cls):
+        super(TestTeacherExamListView, cls).setUp()
+        cls.path = reverse('api:examsheet_list')
+        cls.teacher = mixer.blend(User, is_staff=True)
+        factory = RequestFactory()
+        cls.request = factory.get(cls.path)
+        cls.request.user = cls.teacher
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def test_get_empty_list(self):
+        response = TeacherExamListView().as_view()(self.request)
+        
+        self.assertEqual(response.status_code, 204)
+
+    def test_get_examsheet_list(self):
+        mixer.blend(ExamSheet, author=self.teacher)
+        response = TeacherExamListView().as_view()(self.request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_valid_examsheet(self):
+        data = {}
+        data['title'] = 'Exam title'
+        json_data = json.dumps(data)
+        factory = RequestFactory()
+        request = factory.post(self.path, json_data, content_type='application/json')
+        request.user = self.teacher
+        response = TeacherExamListView().as_view()(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_unvalid_examsheet(self):
+        factory = RequestFactory()
+        request = factory.post(self.path)
+        request.user = self.teacher
+        response = TeacherExamListView().as_view()(request)
+        self.assertEqual(response.status_code, 406)
+
+    
+
+        
+
+    
