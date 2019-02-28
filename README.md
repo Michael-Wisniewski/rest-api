@@ -77,13 +77,16 @@ It was created in accordance with the RESTful application program interface rule
 
 General
 
+<center>
 | Type        | Technologies           |
 | ------------- |:-------------:|
 | Version control system  | Git, Git Flow |
 | Virtual enviromnent | Docker, Docker-Compose |
+</center>
 
 RESTful Api
 
+<center>
 | Type        | Technologies           |
 | ------------- |:-------------:|
 | Servers | Nginx, uWsgi |
@@ -92,6 +95,7 @@ RESTful Api
 | Used libraries | Django, Django REST, Jsonschema |
 | Debug tools | Postman |
 | Tests | Pytest, Pytest-Django, Pytest-Cov, Mixer, RequestFactory |
+</center>
 
 ### 4. Api documentation
 
@@ -140,7 +144,7 @@ RESTful Api
         { "message" : "There are no exam sheets avalible at this moment." }
     ```
 
-**The schoolboy writes a new exam**
+####The schoolboy writes a new exam
 ----
   Returns blank exam in json data format. After receiving the data with answers it sends back the exam score.
 
