@@ -1,12 +1,78 @@
-# rest-api
+# Exam Application
+**Caution!** This code was created to be a attachment for a job application. It is not suitable for commercial purposes. If you find something interesting in it, please do not hesitate to reuse.
 
 
+#### Table of Contents
 
+1. Instalation
+2. Introduction
+3. Application stack overview
+4. Description of functionalities
+5. Api documentation
 
+### 1. Instalation
+The repository contains all the data required to run the application.
+Please ensure that you have available ports: 80 and 8000.
+To start application just run listed below commands.
+```
+git clone git@github.com:Michael-Wisniewski/rest-api.git
+cd rest-api
+docker-compose -f docker-compose.yml -f docker-compose.production.yml up
+```
+Test coverage
+```
+url: http://localhost:80/tests
+```
+Schoolboy's account app.
+```
+url: http://localhost:8000
+login: schoolboy
+password: schoolboy
+```
+Teacher's account app.
+```
+url: http://panel.localhost:8000
+login: teacher
+password: teacher
+```
+Users accounts
+```
+url: http://localhost:80/admin
+login: headmaster
+password: headmaster
+```
+### 2. Introduction
+**"Exam App"** is a web application which allows students and teacher to create and exchange exam tests.
+It was created in accordance with the RESTful application program interface rules.
 
+<p align="center">
+    <img src="./doc/use_case.svg">
+</p>
 
+    Application features:
 
+    Schoolboy
+        - authenticate account
+        - viewing the available exams (include information about author and difficulty)
+        - taking exam
+        - getting exam result
 
+    Teacher
+        - authenticate account
+        - viewing exam sheets (include information about exam's pass rate)
+        - creating and managing of exams sheets
+
+    Headmaster
+        - managing of user accounts
+
+    Other assumptions
+        - exams are single choice tests
+        - question has assigned score from 1 to 5 points
+        - 60% score passes the exam
+        - exam sheet can only be archived, not deleted
+        - exams are single choice tests
+        - exam sheets are versioned so exam result can not be saved<br />
+          if during the filling process, teacher makes any changes to it
 
 ### 3. Application stack overview
 
