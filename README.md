@@ -7,8 +7,7 @@
 1. Instalation
 2. Introduction
 3. Application stack overview
-4. Description of functionalities
-5. Api documentation
+4. Api documentation
 
 ### 1. Instalation
 The repository contains all the data required to run the application.
@@ -96,7 +95,7 @@ RESTful Api
 
 ### 4. Api documentation
 
-####Show schoolboy exam list.####
+#### Show schoolboy exam list.
 ----
   Returns json data with information shortcuts about all availables exams.
 
