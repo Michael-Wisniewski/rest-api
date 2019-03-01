@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from api.models import ExamSheet, Question, Answer, ExamResult
 from api.serializers import *
 from  django.urls import reverse
+import json
 
 @pytest.mark.django_db
 class TestSchoolboyExamListSerializer(TestCase):
@@ -204,3 +205,76 @@ class TestTeacherNewExamSheetSerializer(TestCase):
         errors = serializer.errors
         self.assertEqual(errors['title'][0], 'exam sheet with this title already exists.')
 
+@pytest.mark.django_db
+class TestTeacherExamSerializer(TestCase):
+    
+    def setUp(cls):
+        super(TestTeacherExamSerializer, cls).setUp()
+        cls.teacher = mixer.blend(User, is_staff=True)
+        examsheet = mixer.blend(ExamSheet, author=cls.teacher)
+        question = mixer.blend(Question, examsheet=examsheet)
+        answers = mixer.cycle(2).blend(Answer, question=question, is_correct=False)
+        answers[0].is_correct = True
+        answers[0].save()
+        cls.data = TeacherExamSerializer(examsheet).data
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def test_correct_data_validation(self):
+        serializer = TeacherExamEditSerializer(self.data)
+        self.assertEqual(serializer.is_valid(), True)
+
+    def test_corrupted_data_validation(self):
+        del self.data['title']
+        serializer = TeacherExamEditSerializer(self.data)
+        serializer.is_valid()
+        error = serializer.get_errors()
+        self.assertEqual(error['data']['message'], 'Corrupted data.')
+
+    def test_doubled_title_validation(self):
+        new_examsheet = mixer.blend(ExamSheet, author=self.teacher)
+        self.data['title'] = new_examsheet.title
+        serializer = TeacherExamEditSerializer(self.data)
+        serializer.is_valid()
+        error = serializer.get_errors()
+        self.assertEqual(error['data']['message'], 'Exam sheet with this title already exists.')
+
+    def test_corrupted_question_validation(self):
+        self.data['questions'][0]['id'] += 1
+        serializer = TeacherExamEditSerializer(self.data)
+        serializer.is_valid()
+        error = serializer.get_errors()
+        self.assertEqual(error['data']['message'], 'Question does not correspond to exam sheet.')
+
+    def test_corrupted_answer_validation(self):
+        self.data['questions'][0]['answers'][0]['id'] += 1
+        serializer = TeacherExamEditSerializer(self.data)
+        serializer.is_valid()
+        error = serializer.get_errors()
+        self.assertEqual(error['data']['message'], 'Answer does not correspond to question.')
+
+    def test_only_one_answer_validation(self):
+        self.data['questions'][0]['answers'][0]['delete'] = True
+        serializer = TeacherExamEditSerializer(self.data)
+        serializer.is_valid()
+        error = serializer.get_errors()
+        self.assertEqual(error['data']['message'], 'There must be at last two answers for every question.')
+
+    def test_two_correct_answers_validation(self):
+        self.data['questions'][0]['answers'][1]['is_correct'] = True
+        serializer = TeacherExamEditSerializer(self.data)
+        serializer.is_valid()
+        error = serializer.get_errors()
+        self.assertEqual(error['data']['message'], 'There must be only one correct answer for every question.')
+
+    def test_available_exam_without_questions_validation(self):
+        self.data['available'] = True
+        del self.data['questions']
+        serializer = TeacherExamEditSerializer(self.data)
+        serializer.is_valid()
+        error = serializer.get_errors()
+        self.assertEqual(error['data']['message'], 'Active exam has to have at lest one question.')
+    
+       

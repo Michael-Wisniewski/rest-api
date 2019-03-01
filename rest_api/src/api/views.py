@@ -6,9 +6,6 @@ from rest_framework.renderers import JSONRenderer
 from .validators import SchoolboyExamSheetValidator, TeacherExamSheetValidator
 from rest_framework.response import Response
 
-#
-from django.contrib.auth.models import User
-
 class SchoolboyExamListView(ListAPIView):
     queryset = ExamSheet.availables.all()
     serializer_class = SchoolboyExamListSerializer
@@ -72,5 +69,22 @@ class TeacherExamEditView(APIView):
             return Response(**examsheet_validator.get_errors())
 
     def post(self, request, *args, **kwargs):
+        examsheet_validator = TeacherExamSheetValidator(request.data['id'], request.user)
+        if examsheet_validator.is_valid():
+            exam_serializer = TeacherExamEditSerializer(**request.data)
+            if exam_serializer.is_valid():
+                exam_serializer.save()
+                return Response({'message': 'Exam sheet set updated.'}, status=200)
+            else:
+                return Response(**exam_serializer.get_errors())
+        else:
+            return Response(**examsheet_validator.get_errors())
 
-        user=User.objects.get(pk=1)
+    def delete(self, request, pk):
+        examsheet_validator = TeacherExamSheetValidator(pk, request.user)
+        if  examsheet_validator.is_valid():
+            examsheet_object = examsheet_validator.get_examsheet()
+            examsheet_object.delete()
+            return Response({'message': 'Exam sheet was deleted.'}, status=200)
+        else:
+            return Response(**examsheet_validator.get_errors())
