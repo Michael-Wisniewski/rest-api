@@ -73,7 +73,7 @@ RESTful Api
   * **Code:** 204 <br />
     **Content:**
     ```json
-        { "message" : "There are no exam sheets avalible at this moment." }
+        { "message" : "There are no exam sheets available at this moment." }
     ```
 
 **The schoolboy writes a new exam**
@@ -133,7 +133,7 @@ RESTful Api
   * **Code:** 404 <br />
     **Content:**
     ```json
-        { "message" : "This exam is not avalible at this moment." }
+        { "message" : "This exam is not available at this moment." }
     ```
 
     OR
@@ -141,7 +141,7 @@ RESTful Api
   * **Code:** 410 <br />
     **Content:**
     ```json
-        { "message" : "This exam is no longer avalible." }
+        { "message" : "This exam is no longer available." }
     ```
 * **POST request:**
 
@@ -203,7 +203,7 @@ RESTful Api
   * **Code:** 410 <br />
     **Content:**
     ```json
-        { "message" : "Used exam sheet is no loger avalible." }
+        { "message" : "Used exam sheet is no loger available." }
     ```
 
     OR

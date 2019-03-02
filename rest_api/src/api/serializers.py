@@ -1,8 +1,9 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer, SerializerMethodField, DateTimeField
 from .models import ExamSheet, Question, Answer, ExamResult
 from django.urls import reverse
 from jsonschema import validate
 from django.core.exceptions import ObjectDoesNotExist
+import json
 
 class SchoolboyExamListSerializer(ModelSerializer):
     author = SerializerMethodField()
@@ -60,12 +61,12 @@ class ExamResultSerializer(object):
     _schema = {
                 "type": "object",
                 "properties": {
-                    "id": {"type" : "number"},
-                    "version": {"type" : "number"},
+                    "id": { "type" : "number" },
+                    "version": { "type" : "number" },
                     "answers": {
                                     "type": "array",
                                     "items": { "type": "number" }
-                                   }
+                                }
                 },
                 "required":[
                     "id",
@@ -140,3 +141,210 @@ class ExamResultSerializer(object):
         exam_result.save()
         return {'data': {'message': 'Your score is: '+ str(exam_result.get_mark) + '%'}, 'status': 200}
     
+class TeacherExamListSerializer(ModelSerializer):
+    url = SerializerMethodField()
+    filled = SerializerMethodField()
+    passed = SerializerMethodField()
+    updated = DateTimeField(format="%Y-%m-%d")
+
+    class Meta:
+        model = ExamSheet
+        fields = ('title', 'available', 'version', 'updated', 'filled', 'passed', 'url')
+
+    def get_url(self, obj):
+        url = self.context['request'].build_absolute_uri(reverse('api:exam_edit', kwargs={'pk': obj.id}))
+        return url
+
+    def get_filled(self, obj):
+        return obj.filled_exam_sheets.count()
+
+    def get_passed(self, obj):
+        count = 0
+        for written_exam in obj.filled_exam_sheets.all():
+            if written_exam.get_mark > 50:
+                count +=1
+        return count
+
+class TeacherExamEditSerializer(ModelSerializer):
+    _is_valid = False
+    _error_msg, _error_code, _data = (None,)*3
+    _schema = {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "integer", "minimum": 0 },
+                    "title": { "type": "string", "minLength": 1 },
+                    "available": { "type": "boolean" },
+                    "questions": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "id": { "type": "integer", "minimum": 0 },
+                                    "text": { "type": "string", "minLength": 1 },
+                                    "points": { "type": "integer", "minimum": 1, "maximum": 5 },
+                                    "delete": { "type": "boolean" },
+                                    "answers": {
+                                        "type": "array",
+                                        "minItems": 2,
+                                        "items": [
+                                            {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": { "type": "integer", "minimum": 0 },
+                                                    "is_correct": { "type": "boolean" },
+                                                    "text": { "type": "string", "minLength": 1 },
+                                                    "delete": { "type": "boolean" }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "is_correct",
+                                                    "text"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "text",
+                                    "points",
+                                    "answers"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "available"
+                ]
+            }
+
+    def __init__(self, data):
+        self._data = data
+
+    def is_valid(self):
+        examsheet = ExamSheet.objects.get(id=self._data['id'])
+
+        try:
+            validate(self._data, self._schema)
+        except:
+            self._error_msg = 'Corrupted data.'
+            self._error_code = 406
+            return False 
+
+        if ExamSheet.objects.filter(title=self._data['title']).exclude(id=self._data['id']):
+            self._error_msg = 'Exam sheet with this title already exists.'
+            self._error_code = 406
+            return False
+
+        if 'questions' in self._data:
+            for question in self._data['questions']:
+                if 'id' in question:
+                    try:
+                        question_object = Question.objects.get(id=question['id'], examsheet=examsheet)
+                    except ObjectDoesNotExist:
+                        self._error_msg = 'Question does not correspond to exam sheet.'
+                        self._error_code = 406
+                        return False
+                
+                updated_answers_ids = []
+                valid_answers = 0
+                correct_answers = 0
+                for answer in question['answers']:
+                    if 'id' in answer:
+                        updated_answers_ids.append(answer['id'])
+                    if not 'delete' in answer:
+                        valid_answers +=1
+                    if answer['is_correct'] and not 'delete' in answer:
+                        correct_answers +=1
+
+                existing_answers = question_object.answers.all()
+                if existing_answers.exclude(id__in=updated_answers_ids):
+                    self._error_msg = 'Answer does not correspond to question.'
+                    self._error_code = 406
+                    return False
+
+                if valid_answers < 2:
+                    self._error_msg = 'There must be at last two answers for every question.'
+                    self._error_code = 406
+                    return False
+
+                if correct_answers != 1:
+                    self._error_msg = 'There must be only one correct answer for every question.'
+                    self._error_code = 406
+                    return False
+
+        elif self._data['available']:
+            self._error_msg = 'Active exam has to have at lest one question.'
+            self._error_code = 406
+            return False
+
+        return True
+
+    def save(self):
+        data = self._data
+        examsheet = ExamSheet.objects.get(id=data['id'])
+        examsheet.title = data['title']
+        examsheet.available = data['available']
+        examsheet.save()
+
+        for question in data['questions']:
+            if 'delete' in question:
+                Question.objects.get(id=question['id']).delete()
+            else:
+
+                if 'id' in question:
+                    question_object = Question.objects.get(id=question['id'])
+                    question_object.text = question['text']
+                    question_object.points = question['points']
+                    question_object.save()
+                else:
+                    new_question = Question.objects.create(examsheet=examsheet, text=question['text'], points=question['points'])
+                    question['id'] = new_question.id
+
+                for answer in question['answers']:
+                    if 'delete' in answer:
+                        Answer.objects.get(id=answer['id']).delete()
+                    else:
+                        if 'id' in answer:
+                            answer_object = Answer.objects.get(id=answer['id'])
+                            answer_object.text = answer['text']
+                            answer_object.is_correct = answer['is_correct']
+                            answer_object.save()
+                        else:
+                            new_answer = Answer.objects.create(question_id=question['id'], text=answer['text'], is_correct=answer['is_correct'])
+
+    def get_errors(self):
+        return {'data': {'message': self._error_msg}, 'status': self._error_code}
+
+class NewExamSheetSerializer(ModelSerializer):
+    class Meta:
+        model = ExamSheet
+        fields = '__all__'
+
+    def save(self, **kwargs):
+        self._validated_data['version'] = 0
+        self.validated_data['author'] = self.context['author']
+        super(NewExamSheetSerializer, self).save(**kwargs)
+
+class TeacherAnswerSerializer(ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ['id', 'is_correct', 'text']
+
+class TeacherQuestionSerializer(ModelSerializer):
+    answers = TeacherAnswerSerializer(many=True)
+
+    class Meta:
+        model = Question
+        fields = ['id', 'text', 'points', 'answers']
+
+class TeacherExamSerializer(ModelSerializer):
+    questions = TeacherQuestionSerializer(many=True)
+
+    class Meta:
+        model = ExamSheet
+        fields = ('id', 'title', 'available', 'version', 'questions')

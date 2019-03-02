@@ -29,7 +29,7 @@ class ExamSheet(models.Model):
         self.deleted = True
         self.save()
 
-    def save(self):
+    def save(self, force_insert=False, using=None):
         if self.version == -1:
             raise ValidationError('Zero value is not allowed.')
         elif self.author.is_staff is False:
