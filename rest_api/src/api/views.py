@@ -5,8 +5,9 @@ from .serializers import *
 from rest_framework.renderers import JSONRenderer
 from .validators import SchoolboyExamSheetValidator, TeacherExamSheetValidator
 from rest_framework.response import Response
+from .permissions import SchoolboyLoginRequired, TeacherLoginRequired
 
-class SchoolboyExamListView(ListAPIView):
+class SchoolboyExamListView(SchoolboyLoginRequired, ListAPIView):
     queryset = ExamSheet.availables.all()
     serializer_class = SchoolboyExamListSerializer
     renderer_classes = [JSONRenderer]
@@ -17,7 +18,7 @@ class SchoolboyExamListView(ListAPIView):
         else:
             return super(SchoolboyExamListView, self).list(request, *args, **kwargs)
 
-class SchoolboyNewExamView(APIView):
+class SchoolboyNewExamView(SchoolboyLoginRequired, APIView):
     renderer_classes = [JSONRenderer]
    
     def get(self, request, pk):
@@ -36,7 +37,7 @@ class SchoolboyNewExamView(APIView):
         else:
             return Response(**exam_result_serializer.get_errors())
 
-class TeacherExamListView(ListAPIView):
+class TeacherExamListView(TeacherLoginRequired, ListAPIView):
     queryset = None
     serializer_class = TeacherExamListSerializer
     renderer_classes = [JSONRenderer]
@@ -56,7 +57,7 @@ class TeacherExamListView(ListAPIView):
         else:
             return Response(examsheet_serializer.errors, status=406)
 
-class TeacherExamEditView(APIView):
+class TeacherExamEditView(TeacherLoginRequired, APIView):
     renderer_classes = [JSONRenderer]
     
     def get(self, request, pk):
