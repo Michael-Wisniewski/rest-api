@@ -140,7 +140,7 @@ RESTful Api
         { "message" : "There are no exam sheets avalible at this moment." }
     ```
 
-####Schoolboy writes a new exam
+#### Schoolboy writes a new exam
 ----
   Returns blank exam in json data format. After receiving the data with answers it sends back the exam score.
 
@@ -173,7 +173,7 @@ RESTful Api
                       "answers": [
                             {
                               "id": 1,
-                              "text": "three"
+                              "text": "Three"
                             },
                             { 
                               "id": 2,
@@ -278,7 +278,7 @@ RESTful Api
         { "message" : "Used exam sheet was deleted." }
     ```
 
-####  Teacher exam sheet list.
+#### Teacher exam sheet list.
 ----
   Returns json data with information shortcut about exam sheets. New blank exam sheet can be created by POST method.
 
@@ -341,7 +341,7 @@ RESTful Api
     ```json 
         {
             "message": "Empty examsheet added.",
-             "id": 12
+            "id": 12
         }
     ```
 * **Error POST Response:**
@@ -367,9 +367,9 @@ RESTful Api
     ```json
         { "title": ["exam sheet with this title already exists."] }
     ```
-####Teacher edits exam sheet
+#### Teacher edits exam sheet
 ----
-  Returns exam sheet in json data format. After receiving the data all information about exam can be updated.
+  Returns exam sheet in json data format. After receiving the data all information about exam can be updated. Exam can be archived by sending delete request.
 
 * **URL**
 
@@ -377,7 +377,7 @@ RESTful Api
 
 * **Method:**
 
-  `GET` | `POST`
+  `GET` | `POST` | `DELETE`
   
 *  **URL Params**
 
@@ -409,7 +409,7 @@ RESTful Api
                         {
                             "id": 2,
                             "is_correct": false,
-                            "text": "three"
+                            "text": "Three"
                         }
                     ]
                 }
@@ -417,6 +417,185 @@ RESTful Api
         }
     ```
 * **Error GET Response:**
+
+  * **Code:** 404 <br />
+    **Content:**
+    ```json
+        { "message" : "The exam sheet does not exist." }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "message" : "You do not have rights to edit this examsheet." }
+    ```
+
+    OR
+
+  * **Code:** 410 <br />
+    **Content:**
+    ```json
+        { "message" : "This exam is no longer available." }
+    ```
+* **POST request:**
+
+  * **Content:**
+    ```json
+         {
+            "id": 1,
+            "title": "Math exam",
+            "available": true,
+            "questions": [
+                {
+                    "id": 1,
+                    "text": "How much is two plus two?",
+                    "points": 3,
+                    "answers": [
+                        {
+                            "id": 1,
+                            "is_correct": true,
+                            "text": "Four"
+                        },
+                        {
+                            "id": 2,
+                            "is_correct": false,
+                            "text": "Three"
+                        }
+                        {
+                            "id": 3,
+                            "is_correct": false,
+                            "text": "Three",
+                            "delete": true
+                        }
+                    ]
+                },
+                {
+                    "text": "How much is two minus two?",
+                    "points": 4,
+                    "answers": [
+                        {
+                            "is_correct": true,
+                            "text": "Zero"
+                        },
+                        {
+                            "is_correct": false,
+                            "text": "One"
+                        }
+                    ]
+                }
+            ]
+        }
+    ```
+
+    **Required:**
+ 
+    `id=[integer]` - exam sheet id<br />
+    `title=[string]` - title of exam sheet<br />
+    `availavle=[bool]` - describes if exam is available to schoolboy
+
+    **Optional params for question and answer objects:**
+ 
+    `id=[integer]` - if not provided the application will create a new object<br />
+    `delete=[bool]` - if provided the application will delete object<br /><br />
+
+    In example shown above the answer with id=3 will be deleted and new question will be created.
+
+* **Success POST Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```json 
+        { "message": "Exam sheet set updated." }
+    ```
+* **Error POST Response:**
+
+  * **Code:** 404 <br />
+    **Content:**
+    ```json
+        { "message" : "The exam sheet does not exist." }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "message" : "Corrupted data." }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "message" : "Exam sheet with this title already exists." }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "message" : "Question does not correspond to exam sheet." }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "message" : "Answer does not correspond to question." }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "message" : "There must be at last two answers for every question." }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "message" : "There must be only one correct answer for every question." }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "message" : "Active exam has to have at lest one question." }
+    ```
+
+    OR
+
+  * **Code:** 406 <br />
+    **Content:**
+    ```json
+        { "message" : "You do not have rights to edit this examsheet." }
+    ```
+
+    OR
+
+  * **Code:** 410 <br />
+    **Content:**
+    ```json
+        { "message" : "This exam is no longer available." }
+    ```
+* **Success DELETE Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```json 
+        { "message": "Exam sheet was deleted." }
+    ```
+* **Error DELETE Response:**
 
   * **Code:** 404 <br />
     **Content:**
