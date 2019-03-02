@@ -6,6 +6,8 @@ from api.models import ExamSheet, Question, Answer, ExamResult
 from api.serializers import *
 from  django.urls import reverse
 import json
+from django.core.exceptions import ObjectDoesNotExist
+import copy
 
 @pytest.mark.django_db
 class TestSchoolboyExamListSerializer(TestCase):
@@ -277,4 +279,30 @@ class TestTeacherExamSerializer(TestCase):
         error = serializer.get_errors()
         self.assertEqual(error['data']['message'], 'Active exam has to have at lest one question.')
     
-       
+    def test_save_valid_data(self):
+        serializer = TeacherExamEditSerializer(self.data)
+        serializer.save()       
+
+    def test_delete_question(self):
+        self.data['questions'][0]['delete'] = True
+        serializer = TeacherExamEditSerializer(self.data)
+        serializer.save()
+        self.assertEqual(Question.objects.all().exists(), False)
+
+    def test_add_new_question(self):
+        new_question = copy.deepcopy(self.data['questions'][0])
+        del new_question['id']
+        del new_question['answers'][0]['id']
+        del new_question['answers'][1]['id']
+        self.data['questions'].append(new_question)
+        serializer = TeacherExamEditSerializer(self.data)
+        serializer.save()
+        self.assertEqual(Question.objects.all().count(), 2)
+        self.assertEqual(Answer.objects.all().count(), 4)
+
+    def test_delete_answer(self):
+        self.data['questions'][0]['answers'][0]['delete'] = True
+        self.data['questions'][0]['answers'].append({'is_correct': True, 'text': 'string'})
+        serializer = TeacherExamEditSerializer(self.data)
+        serializer.save()
+        self.assertEqual(Answer.objects.all().count(), 2)

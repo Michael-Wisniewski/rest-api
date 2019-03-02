@@ -71,7 +71,7 @@ class TeacherExamEditView(APIView):
     def post(self, request, *args, **kwargs):
         examsheet_validator = TeacherExamSheetValidator(request.data['id'], request.user)
         if examsheet_validator.is_valid():
-            exam_serializer = TeacherExamEditSerializer(**request.data)
+            exam_serializer = TeacherExamEditSerializer(request.data)
             if exam_serializer.is_valid():
                 exam_serializer.save()
                 return Response({'message': 'Exam sheet set updated.'}, status=200)

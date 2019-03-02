@@ -258,7 +258,7 @@ class TeacherExamEditSerializer(ModelSerializer):
                         updated_answers_ids.append(answer['id'])
                     if not 'delete' in answer:
                         valid_answers +=1
-                    if answer['is_correct']:
+                    if answer['is_correct'] and not 'delete' in answer:
                         correct_answers +=1
 
                 existing_answers = question_object.answers.all()
@@ -285,13 +285,10 @@ class TeacherExamEditSerializer(ModelSerializer):
         return True
 
     def save(self):
-        data = json.load(self._data)
+        data = self._data
         examsheet = ExamSheet.objects.get(id=data['id'])
         examsheet.title = data['title']
-        if data['avalible'] == 'true':
-            examsheet.avalible = True
-        else:
-            examsheet.avalible = False
+        examsheet.available = data['available']
         examsheet.save()
 
         for question in data['questions']:
@@ -306,23 +303,19 @@ class TeacherExamEditSerializer(ModelSerializer):
                     question_object.save()
                 else:
                     new_question = Question.objects.create(examsheet=examsheet, text=question['text'], points=question['points'])
+                    question['id'] = new_question.id
 
                 for answer in question['answers']:
                     if 'delete' in answer:
                         Answer.objects.get(id=answer['id']).delete()
                     else:
-                        if answer['is_correct'] == 'true':
-                            is_correct = True
-                        else:
-                            is_correct = False
-
-                        if 'id' in question:
+                        if 'id' in answer:
                             answer_object = Answer.objects.get(id=answer['id'])
                             answer_object.text = answer['text']
-                            answer_object['is_correct'] == 'is_correct'
+                            answer_object.is_correct = answer['is_correct']
                             answer_object.save()
                         else:
-                            new_answer = Answer.objects.create(question=question['id'], text=answer['text'], is_correct=is_correct)
+                            new_answer = Answer.objects.create(question_id=question['id'], text=answer['text'], is_correct=answer['is_correct'])
 
     def get_errors(self):
         return {'data': {'message': self._error_msg}, 'status': self._error_code}

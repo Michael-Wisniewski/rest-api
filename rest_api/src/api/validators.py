@@ -54,5 +54,5 @@ class TeacherExamSheetValidator(object):
     def get_examsheet(self):
         return self._examsheet
 
-    def get_error_response(self):
+    def get_errors(self):
         return {'data': {'message': self._error_msg}, 'status': self._error_code}
