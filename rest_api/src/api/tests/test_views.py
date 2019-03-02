@@ -2,7 +2,7 @@ from mixer.backend.django import mixer
 import pytest
 from api.views import *
 from django.urls import reverse
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, override_settings
 import json
 from django.contrib.auth.models import User
 from api.models import ExamSheet, Question, Answer
@@ -18,7 +18,7 @@ class TestSchoolboyExamListView(TestCase):
     def setUp(cls):
         super(TestSchoolboyExamListView, cls).setUp()
         path = reverse('api:exam_list')
-        user = User(is_staff=False)
+        user = mixer.blend(User, is_staff=False)
         factory = RequestFactory()
         cls.request = factory.get(path)
         cls.request.user = user
@@ -30,6 +30,7 @@ class TestSchoolboyExamListView(TestCase):
     def test_get_empty_list(self):
         response = SchoolboyExamListView().as_view()(self.request).render()
         message = json.loads(response.content.decode('utf-8'))
+        print(message)
         self.assertEqual(message['message'], 'There are no exam sheets available at this moment.')
 
     def test_get_examsheet_list(self):
@@ -43,6 +44,7 @@ class TestSchoolboyNewExamView(TestCase):
 
     def setUp(cls):
         super(TestSchoolboyNewExamView, cls).setUp()
+        cls.schoolboy =  mixer.blend(User, is_staff=False)
         teacher = mixer.blend(User, is_staff=True)
         cls.exam = mixer.blend(ExamSheet, author=teacher, available=True)
         question = mixer.blend(Question, examsheet=cls.exam)
@@ -60,6 +62,7 @@ class TestSchoolboyNewExamView(TestCase):
 
     def test_get_exam(self):
         request = self.factory.get(self.path)
+        request.user = self.schoolboy
         response = SchoolboyNewExamView().as_view()(request, pk=self.exam.id)
         self.assertEqual(response.status_code, 200)
 
@@ -67,13 +70,14 @@ class TestSchoolboyNewExamView(TestCase):
         pk = self.exam.id
         self.exam.delete()
         request = self.factory.get(self.path)
+        request.user = self.schoolboy
         response = SchoolboyNewExamView().as_view()(request, pk=pk)
         self.assertEqual(response.status_code, 410)
 
     def test_post_valid_exam(self):
         json_data = json.dumps(self.data)
         request = self.factory.post(self.path, json_data, content_type='application/json')
-        request.user = mixer.blend(User, is_staff=False)
+        request.user = self.schoolboy
         response = SchoolboyNewExamView().as_view()(request, pk=self.exam.id)
         self.assertEqual(response.status_code, 200)
 
@@ -81,6 +85,7 @@ class TestSchoolboyNewExamView(TestCase):
         del self.data['answers']
         json_data = json.dumps(self.data)
         request = self.factory.post(self.path, json_data, content_type='application/json')
+        request.user = self.schoolboy
         response = SchoolboyNewExamView().as_view()(request, pk=self.exam.id)
         self.assertEqual(response.status_code, 406)
 
@@ -138,19 +143,9 @@ class TestTeacherExamEditView(TestCase):
         answers[0].is_correct = True
         answers[0].save()
         cls.data = TeacherExamSerializer(cls.examsheet).data
-
-
-
-
-
-
-
-
-
         cls.path = reverse('api:exam_edit', kwargs={'pk': cls.examsheet.id})
         cls.factory = RequestFactory()
         
-
     @classmethod
     def tearDownClass(cls):
         pass
@@ -202,8 +197,3 @@ class TestTeacherExamEditView(TestCase):
         request.user = self.teacher
         response = TeacherExamEditView().as_view()(request, pk=0)
         self.assertEqual(response.status_code, 404)
-      
-
-        
-
-    
