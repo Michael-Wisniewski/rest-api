@@ -95,6 +95,117 @@ RESTful Api
 
 ### 4. Api documentation
 
+
+
+
+
+#### Authentication of users.
+----
+  Returns a pair of keys to authenticate.
+
+* **URL**
+
+  localhost/v1/api/token/
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+
+   None
+
+* **POST request:**
+
+  * **Content:**
+    ```json
+        { "username": "admin", "password": "admin" }
+    ```
+
+    **Required:**
+ 
+    `username=[string]`<br />
+    `password=[string]`<br />
+
+* **Success POST Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```json 
+        {
+            "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.....",
+            "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9......."
+        }
+    ```
+* **Error POST Response:**
+
+  * **Code:** 400 <br />
+    **Content:**
+    ```json
+        { "non_field_errors": [ "No active account found with the given credentials" ] }
+    ```
+
+    OR
+
+  * **Code:** 400 <br />
+    **Content:**
+    ```json
+        { "username": [ "This field is required." ],
+          "password": [ "This field is required."]
+        }
+    ```
+#### Refresh expired token.
+----
+  Returns the refreshed access token. Use "refresh" token received in authentication process.
+
+* **URL**
+
+  localhost/v1/api/token/refresh/
+
+* **Method:**
+
+  `POST`
+  
+*  **URL Params**
+
+   None
+
+* **POST request:**
+
+  * **Content:**
+    ```json
+        { "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9....." }
+    ```
+
+    **Required:**
+ 
+    `refresh=[string]`<br />
+
+* **Success POST Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+    ```json 
+        { "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9......." }
+    ```
+* **Error POST Response:**
+
+  * **Code:** 400 <br />
+    **Content:**
+    ```json
+        {
+            "detail": "Token is invalid or expired",
+            "code": "token_not_valid"
+        }
+    ```
+
+    OR
+
+  * **Code:** 400 <br />
+    **Content:**
+    ```json
+        { "refresh": [ "This field is required." ] }
+    ```
 #### Schoolboy exam list.
 ----
   Returns json data with information shortcut about all availables exams.
