@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import LandingPage from '@/views/LandingPage'
+import SchoolboyIndex from '@/views/SchoolboyIndex'
+import SchoolboyExamList from '@/views/SchoolboyExamList'
 
 Vue.use(Router)
 
@@ -8,8 +10,19 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'LandingPage',
+      component: LandingPage
+    },
+    {
+      path: '/schoolboy',
+      component: SchoolboyIndex,
+      children: [
+        {
+          path: 'exam_list/',
+          name: 'SchoolboyExamList',
+          component: SchoolboyExamList
+        }
+      ]
     }
   ]
 })

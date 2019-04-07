@@ -1,8 +1,22 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import './assets/sass/index.scss'
+
+// import axios from 'axios'
+// import VueAxios from 'vue-axios'
+// import JwtDecode from 'jwt-decode'
+
+import Vuex from 'vuex'
+// import AuthStore from './stores/auth_store'
+
+Vue.use(Vuex)
+Vue.use(BootstrapVue)
+// Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false
 
@@ -10,6 +24,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  // AuthStore,
   components: { App },
   template: '<App/>'
 })
