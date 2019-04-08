@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import LandingPage from '@/views/LandingPage'
-import SchoolboyIndex from '@/views/SchoolboyIndex'
+import Base from '@/views/Base'
 import SchoolboyExamList from '@/views/SchoolboyExamList'
+import SchoolboyExam from '@/views/SchoolboyExam'
 
 Vue.use(Router)
 
@@ -14,13 +15,18 @@ export default new Router({
       component: LandingPage
     },
     {
-      path: '/schoolboy',
-      component: SchoolboyIndex,
+      path: '/',
+      component: Base,
       children: [
         {
-          path: 'exam_list/',
-          name: 'SchoolboyExamList',
+          path: 'schoolboy/exam_list/',
+          meta: { user: 'schoolboy' },
           component: SchoolboyExamList
+        },
+        {
+          path: 'Schoolboy/exam/',
+          meta: { user: 'schoolboy' },
+          component: SchoolboyExam
         }
       ]
     }

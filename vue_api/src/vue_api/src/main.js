@@ -12,7 +12,7 @@ import './assets/sass/index.scss'
 // import JwtDecode from 'jwt-decode'
 
 import Vuex from 'vuex'
-// import AuthStore from './stores/auth_store'
+import store from './store'
 
 Vue.use(Vuex)
 Vue.use(BootstrapVue)
@@ -24,7 +24,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
-  // AuthStore,
+  store,
   components: { App },
   template: '<App/>'
 })
