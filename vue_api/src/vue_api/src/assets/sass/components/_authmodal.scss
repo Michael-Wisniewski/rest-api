@@ -1,0 +1,27 @@
+#auth-modal {
+    .close-btn {
+        color: #fff;
+        &:hover {
+            text-decoration: none;
+        }
+    }
+    .form-row {
+        min-height: 85px;
+    }
+    #connection {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        z-index: 100;
+        top: 0;
+        left: 0;
+        display: flex;
+        background-color: #575757b3;
+    }
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+    }
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
+    }
+}
