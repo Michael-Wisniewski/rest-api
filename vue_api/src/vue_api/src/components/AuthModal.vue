@@ -14,6 +14,12 @@
       </router-link>
     </div>
 
+    <h4 id="login-error" class="text-center">
+      <span v-show="loginError" class="badge badge-danger">
+        {{ loginError }}
+      </span>
+    </h4>
+
     <b-form-group
       label="Username :"
       class="mt-4"
@@ -60,7 +66,10 @@
 
     <transition name="fade">
     <div id="connection" v-if="isChecking">
-     <div class="loader">Loading...</div>
+      <b-spinner
+        :variant="variant"
+      >
+      </b-spinner>
     </div>
     </transition>
 
@@ -80,6 +89,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+
 export default {
   name: 'AuthModal',
   data () {
@@ -100,10 +110,16 @@ export default {
   ],
   computed: {
     ...mapGetters([
-      'isAuthenticated'
+      'isAuthenticated',
+      'loginError'
     ]),
-    show () {
-      return !this.isAuthenticated
+    show: {
+      set () {
+        return true
+      },
+      get () {
+        return !this.isAuthenticated
+      }
     }
   },
   methods: {
@@ -117,8 +133,8 @@ export default {
           username: this.username,
           password: this.password
         }
-        this.resetData()
         this.obtainToken(payload)
+        this.isChecking = false
       }
     },
     validateData () {
@@ -185,6 +201,11 @@ export default {
     },
     password () {
       this.checkPassword()
+    },
+    show () {
+      if (this.show) {
+        this.resetData()
+      }
     }
   }
 }

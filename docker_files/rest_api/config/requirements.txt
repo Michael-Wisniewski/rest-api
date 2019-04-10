@@ -10,3 +10,4 @@ pytest-cov
 mixer
 jsonschema
 djangorestframework_simplejwt
+django-cors-headers

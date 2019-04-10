@@ -5,5 +5,8 @@ export default {
     } else {
       return false
     }
+  },
+  loginError: (state) => {
+    return state.loginError
   }
 }

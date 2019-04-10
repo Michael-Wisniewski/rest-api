@@ -9,7 +9,6 @@ import './assets/sass/index.scss'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-// import JwtDecode from 'jwt-decode'
 
 import Vuex from 'vuex'
 import store from './store'
