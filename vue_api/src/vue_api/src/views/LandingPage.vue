@@ -18,22 +18,22 @@
         </b-card>
       </b-col>
       <b-col sm="4">
-        <b-card
-          header="Schoolboy"
-          header-tag="header"
-          border-variant="success"
-          header-bg-variant="success"
-          header-text-variant="white"
-          align="center"
-          class="shadow"
-        >
-          <b-card-text>
-          <img :src="require('../assets/images/schoolboy.jpg')" alt="Schoolboy panel">
-          </b-card-text>
-          <router-link to="schoolboy/exam_list/">
+        <router-link to="schoolboy/exam_list/">
+          <b-card
+            header="Schoolboy"
+            header-tag="header"
+            border-variant="success"
+            header-bg-variant="success"
+            header-text-variant="white"
+            align="center"
+            class="shadow"
+          >
+            <b-card-text>
+            <img :src="require('../assets/images/schoolboy.jpg')" alt="Schoolboy panel">
+            </b-card-text>
             <b-button variant="outline-success" size="lg">Log In</b-button>
-          </router-link>
-        </b-card>
+          </b-card>
+        </router-link>
       </b-col>
     </b-row>
   </div>

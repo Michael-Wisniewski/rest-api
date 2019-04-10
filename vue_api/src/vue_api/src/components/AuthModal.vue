@@ -79,13 +79,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'AuthModal',
   data () {
     return {
-      username: '',
-      password: '',
+      username: 'schoolboy',
+      password: 'schoolboy',
       showPasssword: false,
       usernameValidation: undefined,
       usernameValidationText: '',
@@ -107,9 +107,18 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'obtainToken'
+    ]),
     login () {
       if (this.validateData()) {
         this.isChecking = true
+        const payload = {
+          username: this.username,
+          password: this.password
+        }
+        this.resetData()
+        this.obtainToken(payload)
       }
     },
     validateData () {
@@ -159,6 +168,15 @@ export default {
           this.passwordValidationText = 'Password is too short'
         }
       }
+    },
+    resetData () {
+      this.username = ''
+      this.password = ''
+      this.showPasssword = false
+      this.usernameValidation = undefined
+      this.usernameValidationText = ''
+      this.passwordValidation = undefined
+      this.passwordValidationText = ''
     }
   },
   watch: {
