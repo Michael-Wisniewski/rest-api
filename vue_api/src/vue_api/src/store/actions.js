@@ -22,10 +22,10 @@ export default {
   },
   refreshToken: ({ state, commit }) => {
     const payload = {
-      refresh: this.state.jwtRefresh
+      refresh: state.jwtRefresh
     }
 
-    axios.post(this.state.endpoints.refreshJwt, payload)
+    axios.post(state.endpoints.refreshJwt, payload)
       .then((response) => {
         this.commit('updateAccessToken', response.data.access)
       })
@@ -36,7 +36,7 @@ export default {
   removeTokens: ({ commit }) => {
     commit('removeTokens')
   },
-  inspectToken: ({ state, commit }) => {
+  inspectToken: ({ state, commit, dispatch }) => {
     const accessToken = state.jwtAccess
     const refreshToken = state.jwtRefresh
 
@@ -47,9 +47,10 @@ export default {
       const refreshExp = refreshDecoded.exp
 
       if (accessExp - (Date.now() / 1000) < 1800 && (refreshExp - Date.now() / 1000) < 628200) {
-        this.refreshToken()
+        dispatch('refreshToken')
       } else if (refreshExp < Date.now() / 1000) {
         commit('removeTokens')
+        console.log('remove tokens')
       }
     }
   }

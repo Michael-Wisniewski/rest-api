@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 import NavBar from '@/components/NavBar'
 import AuthModal from '@/components/AuthModal'
 
@@ -41,11 +41,6 @@ export default {
     } else if (this.user === 'teacher') {
       this.variant = 'primary'
     }
-  },
-  computed: {
-    ...mapGetters([
-      'isAuthenticated'
-    ])
   },
   methods: {
     ...mapActions([

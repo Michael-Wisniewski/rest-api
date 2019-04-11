@@ -8,5 +8,13 @@ export default {
   },
   loginError: (state) => {
     return state.loginError
+  },
+  headers: (state) => {
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + state.jwtAccess
+      }
+    }
+    return config
   }
 }
