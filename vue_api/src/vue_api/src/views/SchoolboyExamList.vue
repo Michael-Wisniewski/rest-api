@@ -11,7 +11,7 @@
       </b-spinner>
       <b-card
         v-else-if="errorMsg"
-        class="text-center"
+        class="text-center shadow"
       >
         <b-card-text>
           {{ errorMsg }}
@@ -23,19 +23,29 @@
         header-bg-variant="success"
         header-text-variant="white"
         border-variant="success"
+        class="shadow"
       >
         <b-card-text>
           <b-table
             :items="exams"
             :fields="fields"
             striped
-            hover
           >
+            <template
+              slot="difficulty"
+              slot-scope="data"
+            >
+              <h5>
+                <span :class="'badge badge-' + getVariant(data.value)">
+                  {{ data.value }}
+                </span>
+              </h5>
+            </template>
             <template
               slot="url"
               slot-scope="data"
             >
-              <router-link :to="data.value">
+              <router-link :to="getUrl(data.value)">
                 <b-button variant="success">>></b-button>
               </router-link>
             </template>
@@ -89,7 +99,9 @@ export default {
   methods: {
     getExams () {
       if (this.isAuthenticated) {
-        axios.get('http://localhost:80/v1/schoolboy/exam_list/', this.headers)
+        const headers = this.headers
+
+        axios.get('http://localhost:80/v1/schoolboy/exam_list/', headers)
           .then((response) => {
             if (response.status === 200) {
               this.exams = response.data
@@ -101,6 +113,22 @@ export default {
             this.errorMsg = 'Something gone wrong.'
           })
       }
+    },
+    getUrl (url) {
+      const params = url.split('/')
+      const id = params[params.length - 2]
+      return '/schoolboy/exam/' + id + '/'
+    },
+    getVariant (difficulty) {
+      let variant = ''
+      if (difficulty === 'Easy') {
+        variant = 'success'
+      } else if (difficulty === 'Medium') {
+        variant = 'warning'
+      } else {
+        variant = 'danger'
+      }
+      return variant
     }
   },
   watch: {

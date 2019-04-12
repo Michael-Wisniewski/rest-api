@@ -5,7 +5,9 @@
       :variant="variant"
     />
     <b-container fluid>
+      <transition name="bounce" mode="out-in">
       <router-view/>
+      </transition>
       <auth-modal
         :user="user"
         :variant="variant"

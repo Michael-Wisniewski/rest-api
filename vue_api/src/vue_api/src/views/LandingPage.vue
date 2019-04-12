@@ -18,7 +18,7 @@
         </b-card>
       </b-col>
       <b-col sm="4">
-        <router-link to="schoolboy/exam_list/">
+        <router-link to="/schoolboy/exam_list/">
           <b-card
             header="Schoolboy"
             header-tag="header"

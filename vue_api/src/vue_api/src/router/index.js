@@ -24,7 +24,7 @@ export default new Router({
           component: SchoolboyExamList
         },
         {
-          path: 'Schoolboy/exam/',
+          path: 'schoolboy/exam/:id/',
           meta: { user: 'schoolboy' },
           component: SchoolboyExam
         }
