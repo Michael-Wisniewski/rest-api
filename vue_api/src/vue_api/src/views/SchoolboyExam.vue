@@ -92,7 +92,11 @@ export default {
           })
           .catch((error) => {
             if (error.response) {
-              this.msg = error.response.data.message
+              if (error.response.status === 403) {
+                this.msg = error.response.data.detail
+              } else {
+                this.msg = error.response.data.message
+              }
             } else {
               this.msg = 'Something gone wrong'
             }
@@ -116,7 +120,11 @@ export default {
           })
           .catch((error) => {
             if (error.response) {
-              this.msg = error.response.data.message
+              if (error.response.status === 403) {
+                this.msg = error.response.data.detail
+              } else {
+                this.msg = error.response.data.message
+              }
             } else {
               this.msg = 'Something gone wrong'
             }

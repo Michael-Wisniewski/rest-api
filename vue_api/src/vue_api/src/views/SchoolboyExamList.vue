@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
 
 export default {
@@ -97,7 +97,11 @@ export default {
     ])
   },
   methods: {
+    ...mapActions([
+      'inspectToken'
+    ]),
     getExams () {
+      this.inspectToken()
       if (this.isAuthenticated) {
         const headers = this.headers
 
@@ -105,12 +109,18 @@ export default {
           .then((response) => {
             if (response.status === 200) {
               this.exams = response.data
-            } else if (response.status === 202) {
+            } else if (response.status === 204) {
               this.errorMsg = response.data.message
             }
           })
-          .catch(() => {
-            this.errorMsg = 'Something gone wrong.'
+          .catch((error) => {
+            if (error.response) {
+              if (error.response.status === 403) {
+                this.errorMsg = error.response.data.detail
+              }
+            } else {
+              this.errorMsg = 'Something gone wrong.'
+            }
           })
       }
     },

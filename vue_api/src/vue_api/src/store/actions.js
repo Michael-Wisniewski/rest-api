@@ -45,12 +45,12 @@ export default {
       const refreshDecoded = jwtDecode(refreshToken)
       const accessExp = accessDecoded.exp
       const refreshExp = refreshDecoded.exp
+      const now = Date.now() / 1000
 
-      if (accessExp - (Date.now() / 1000) < 1800 && (refreshExp - Date.now() / 1000) < 628200) {
+      if (accessExp < now && refreshExp > now) {
         dispatch('refreshToken')
-      } else if (refreshExp < Date.now() / 1000) {
+      } else if (refreshExp < now) {
         commit('removeTokens')
-        console.log('remove tokens')
       }
     }
   }
