@@ -1,0 +1,18 @@
+#teacher-exam {
+    .spinner-border {
+        width: 8rem;
+        height: 8rem;
+        font-size: 3rem;
+        color: #dedede;
+        margin: auto;
+        display: block;
+    }
+    #title-card {
+       .card-header {
+           text-align: end;
+           .badge {
+               font-size: 16px;
+           }
+       }
+    }
+}
