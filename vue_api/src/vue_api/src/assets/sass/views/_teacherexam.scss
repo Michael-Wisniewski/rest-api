@@ -8,11 +8,26 @@
         display: block;
     }
     #title-card {
-       .card-header {
-           text-align: end;
-           .badge {
-               font-size: 16px;
-           }
+        .card-header {
+            font-size: 18px;
+            .version {
+                float: right;
+            }
        }
+    }
+    .question-header {
+        font-size: 18px;
+        overflow: auto;
+        .title {
+            margin-top: 10px;
+            display: inline-block;
+        }
+        .delete-question {
+            float: right;
+        }
+    }
+    .select-points {
+        width: 64px;
+        margin-left: 10px;
     }
 }

@@ -36,7 +36,7 @@
           </b-card-text>
         </b-card>
         <question-box
-          v-if="exam"
+          v-else-if="exam"
           :currentQuestion="exam.questions[index]"
           :percentCompleted="percentCompleted"
           :returnedAnswer="returnedAnswer"

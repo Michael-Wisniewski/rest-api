@@ -16,6 +16,17 @@
         <b-card-text>
           {{ errorMsg }}
         </b-card-text>
+        <div
+          v-if="firstExam"
+          slot="footer"
+          class="text-center"
+        >
+          <b-button
+            @click="showNewExamModal = true"
+            variant="info">
+              Add first exam
+          </b-button>
+        </div>
       </b-card>
       <b-card
         v-else-if="exams"
@@ -114,6 +125,7 @@ export default {
       exams: null,
       errorMsg: '',
       showNewExamModal: false,
+      firstExam: false,
       fields: [
         {
           key: 'title',
@@ -184,7 +196,8 @@ export default {
                 this.exams = response.data
               }
             } else if (response.status === 204) {
-              this.errorMsg = response.data.message
+              this.firstExam = true
+              this.errorMsg = 'You did not add any exam sheets.'
             }
           })
           .catch((error) => {
@@ -214,6 +227,7 @@ export default {
     },
     refreshList () {
       this.showNewExamModal = false
+      this.errorMsg = ''
       this.getExams()
     }
   },

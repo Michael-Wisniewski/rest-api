@@ -2,7 +2,7 @@
   <b-modal
     id="title-modal"
     v-model="showModal"
-    @hide="refreshList"
+    @hide="closeModal"
     centered
     header-bg-variant="primary"
     header-text-variant="white"

@@ -110,7 +110,7 @@ export default {
             if (response.status === 200) {
               this.exams = response.data
             } else if (response.status === 204) {
-              this.errorMsg = response.data.message
+              this.errorMsg = 'There are no exam sheets avalible at this moment.'
             }
           })
           .catch((error) => {
