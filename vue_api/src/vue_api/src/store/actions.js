@@ -26,8 +26,8 @@ export default {
     }
 
     axios.post(state.endpoints.refreshJwt, payload)
-      .then((response) => {
-        this.commit('updateAccessToken', response.data.access)
+      .then(response => {
+        commit('updateAccessToken', response.data.access)
       })
       .catch(() => {
         commit('removeTokens')

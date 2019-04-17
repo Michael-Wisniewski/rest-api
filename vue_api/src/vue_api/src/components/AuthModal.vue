@@ -94,8 +94,8 @@ export default {
   name: 'AuthModal',
   data () {
     return {
-      username: 'teacher',
-      password: 'teacher',
+      username: '',
+      password: '',
       showPasssword: false,
       usernameValidation: undefined,
       usernameValidationText: '',
