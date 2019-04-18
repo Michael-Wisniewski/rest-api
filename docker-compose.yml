@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  server:
+    build: ./docker_files/server/
+    container_name: server
+    volumes:
+      - ./rest_api/static:/rest_api/static
+      - ./vue_api/src/vue_api/dist:/vue_api
+    ports:
+      - 80:80
+    networks:
+      - serwer_to_rest_api
+    depends_on:
+      - rest_api
+
+  rest_api:
+    build: ./docker_files/rest_api/
+    container_name: rest_api
+    env_file:
+      - ./docker_files/database/config/db_conf_env.ini
+    volumes:
+      - ./rest_api/src:/rest_api/src
+      - ./rest_api/static:/rest_api/static
+    networks:
+      - serwer_to_rest_api
+      - rest_api_to_database
+    depends_on:
+      - database
+
+  database:
+    image: postgres:10.6-alpine
+    container_name: database
+    env_file:
+      - ./docker_files/database/config/db_conf_env.ini
+    volumes:
+      - ./databases/main_db:/var/lib/postgresql/data
+    networks:
+      - rest_api_to_database
+
+networks:
+  serwer_to_rest_api:
+    driver: bridge
+  rest_api_to_database:
+    driver: bridge

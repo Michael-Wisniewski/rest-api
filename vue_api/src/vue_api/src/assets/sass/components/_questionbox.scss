@@ -1,0 +1,15 @@
+#question-box-container {
+    .progress{
+        height: 20px;
+        .progress-bar {
+            height: 20px;
+        }
+    }
+    .card-title{
+        margin: 1rem 0 3rem 0;
+    }
+    .list-group-item:hover {
+        background: #EEE;
+        cursor: pointer;
+    }
+}

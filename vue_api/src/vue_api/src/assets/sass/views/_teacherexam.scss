@@ -1,0 +1,33 @@
+#teacher-exam {
+    .spinner-border {
+        width: 8rem;
+        height: 8rem;
+        font-size: 3rem;
+        color: #dedede;
+        margin: auto;
+        display: block;
+    }
+    #title-card {
+        .card-header {
+            font-size: 18px;
+            .version {
+                float: right;
+            }
+       }
+    }
+    .question-header {
+        font-size: 18px;
+        overflow: auto;
+        .title {
+            margin-top: 10px;
+            display: inline-block;
+        }
+        .delete-question {
+            float: right;
+        }
+    }
+    .select-points {
+        width: 64px;
+        margin-left: 10px;
+    }
+}

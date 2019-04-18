@@ -1,0 +1,11 @@
+#nav-bar {
+    nav {
+        min-height: 64px;
+        button {
+            background-color: #fff;
+            &:hover {
+                background-color: transparent;
+            }
+        }
+    }
+}

@@ -1,0 +1,6 @@
+version: '3'
+
+services:
+  rest_api:
+    environment:
+      PRODUCTION: 'true'

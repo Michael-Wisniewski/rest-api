@@ -1,0 +1,13 @@
+Django
+uwsgi
+psycopg2
+pytz
+djangorestframework
+djangorestframework_jwt
+pytest
+pytest-django
+pytest-cov
+mixer
+jsonschema
+djangorestframework_simplejwt
+django-cors-headers
