@@ -197,7 +197,6 @@ class TeacherExamEditSerializer(ModelSerializer):
                                                     "delete": { "type": "boolean" }
                                                 },
                                                 "required": [
-                                                    "id",
                                                     "is_correct",
                                                     "text"
                                                 ]
@@ -206,7 +205,6 @@ class TeacherExamEditSerializer(ModelSerializer):
                                     }
                                 },
                                 "required": [
-                                    "id",
                                     "text",
                                     "points",
                                     "answers"
@@ -242,17 +240,10 @@ class TeacherExamEditSerializer(ModelSerializer):
 
         if 'questions' in self._data:
             for question in self._data['questions']:
-                if 'id' in question:
-                    try:
-                        question_object = Question.objects.get(id=question['id'], examsheet=examsheet)
-                    except ObjectDoesNotExist:
-                        self._error_msg = 'Question does not correspond to exam sheet.'
-                        self._error_code = 406
-                        return False
-                
                 updated_answers_ids = []
                 valid_answers = 0
                 correct_answers = 0
+
                 for answer in question['answers']:
                     if 'id' in answer:
                         updated_answers_ids.append(answer['id'])
@@ -260,12 +251,20 @@ class TeacherExamEditSerializer(ModelSerializer):
                         valid_answers +=1
                     if answer['is_correct'] and not 'delete' in answer:
                         correct_answers +=1
-
-                existing_answers = question_object.answers.all()
-                if existing_answers.exclude(id__in=updated_answers_ids):
-                    self._error_msg = 'Answer does not correspond to question.'
-                    self._error_code = 406
-                    return False
+                
+                if 'id' in question:
+                    try:
+                        question_object = Question.objects.get(id=question['id'], examsheet=examsheet)
+                        existing_answers = question_object.answers.all()
+                        
+                        if existing_answers.exclude(id__in=updated_answers_ids):
+                            self._error_msg = 'Answer does not correspond to question.'
+                            self._error_code = 406
+                            return False
+                    except ObjectDoesNotExist:
+                        self._error_msg = 'Question does not correspond to exam sheet.'
+                        self._error_code = 406
+                        return False
 
                 if valid_answers < 2:
                     self._error_msg = 'There must be at last two answers for every question.'

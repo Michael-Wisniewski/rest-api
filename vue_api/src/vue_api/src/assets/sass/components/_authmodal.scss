@@ -1,0 +1,31 @@
+#auth-modal {
+    .close-btn {
+        color: #fff;
+        &:hover {
+            text-decoration: none;
+        }
+    }
+    .form-row {
+        min-height: 85px;
+    }
+    #login-error {
+        min-height: 30px;
+        margin-bottom: 0px;
+    }
+    #connection {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        z-index: 100;
+        top: 0;
+        left: 0;
+        display: flex;
+        background-color: #575757b3;
+        .spinner-border {
+            margin: auto;
+            width: 5rem;
+            height: 5rem;
+            font-size: 2rem;
+        }
+    }
+}

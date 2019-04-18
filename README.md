@@ -25,10 +25,19 @@ RESTful Api
 | Database | PostgreSQL |
 | Programming language | Python v.3.6 |
 | Used libraries | Django, Django REST, Jsonschema |
-| Debug tools | Postman |
-| Tests | Pytest, Pytest-Django, Pytest-Cov, Mixer, RequestFactory |
+| Debug tools | Postman, DBeaver |
+| Tests | Pytest, Pytest-Django, Pytest-Cov, Mixer, RequestFactory, Client |
 
+Vue Api
 
+| Type        | Technologies           |
+| ------------- |:-------------:|
+| Servers | XX |
+
+| Programming language | Java Script |
+| Used libraries | Vue, Vuex |
+| Debug tools | Vue.js devtools, Eslint |
+| Tests |  |
 
 
 **Show schoolboy exam list.**
