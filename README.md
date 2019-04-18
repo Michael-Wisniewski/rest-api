@@ -11,35 +11,51 @@
 
 ### 1. Instalation
 The repository contains all the data required to run the application.
-Please ensure that you have available ports: 80 and 8000.
-To start application just run listed below commands.
+Please ensure that you have available port: 80.
+
+To restore the database:
+
 ```
-git clone git@github.com:Michael-Wisniewski/rest-api.git
-cd rest-api
+docker-compose up -d database
+
+docker-compose exec -T database  pg_restore -C --clean --no-acl --no-owner -U rest_api_admin -d rest_api < database.backup
+
+docker-compose stop database
+```
+
+To run containers:
+
+```
 docker-compose -f docker-compose.yml -f docker-compose.production.yml up
 ```
+
 Test coverage
 ```
-url: http://localhost:80/tests
+url: http://localhost/tests
 ```
-Schoolboy's account app.
+
+Vue application
 ```
-url: http://localhost:8000
+url: http://localhost/vue
+
+Schoolboy's panel
+
 login: schoolboy
 password: schoolboy
-```
-Teacher's account app.
-```
-url: http://panel.localhost:8000
+
+Teacher's panel
+
 login: teacher
 password: teacher
 ```
+
 Users accounts
 ```
-url: http://localhost:80/admin
+url: http://localhost/admin
 login: headmaster
 password: headmaster
 ```
+
 ### 2. Introduction
 **"Exam App"** is a web application which allows students and teacher to create and exchange exam tests.
 It was created in accordance with the RESTful application program interface rules.
@@ -89,9 +105,19 @@ RESTful Api
 | Servers | Nginx, uWsgi |
 | Database | PostgreSQL |
 | Programming language | Python v.3.6 |
-| Used libraries | Django, Django REST, Jsonschema |
+| Used libraries | Django, Django REST, Jsonschema, Django Cors Headers, Djangorestframework Jwt |
 | Debug tools | Postman |
 | Tests | Pytest, Pytest-Django, Pytest-Cov, Mixer, RequestFactory |
+
+Vue Api
+
+| Type        | Technologies           |
+| ------------- |:-------------:|
+| Servers | Nginx|
+| Programming language | Java Script ES6 |
+| Module Bundler | Webpack |
+| Used libraries | Vue, Vue-Cli, Vuex, Vue-router, Bootstrap-Vue, Vue-Axios, Jwt-Decode |
+| Debug tools | Vue Devtools |
 
 ### 4. Api documentation
 
