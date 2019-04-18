@@ -102,7 +102,7 @@ RESTful Api
 
 | Type        | Technologies           |
 | ------------- |:-------------:|
-| Servers | Nginx, uWsgi |
+| Server | Nginx, uWsgi |
 | Database | PostgreSQL |
 | Programming language | Python v.3.6 |
 | Used libraries | Django, Django REST, Jsonschema, Django Cors Headers, Djangorestframework Jwt |
@@ -113,7 +113,7 @@ Vue Api
 
 | Type        | Technologies           |
 | ------------- |:-------------:|
-| Servers | Nginx|
+| Server | Nginx |
 | Programming language | Java Script ES6 |
 | Module Bundler | Webpack |
 | Used libraries | Vue, Vue-Cli, Vuex, Vue-router, Bootstrap-Vue, Vue-Axios, Jwt-Decode |
