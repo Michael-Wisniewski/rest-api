@@ -3,7 +3,7 @@ import jwtDecode from 'jwt-decode'
 
 export default {
   obtainToken: ({ commit, state }, payload) => {
-    axios.post(state.endpoints.obtainJwt, payload)
+    return axios.post(state.endpoints.obtainJwt, payload)
       .then((response) => {
         commit('setTokens', response.data)
       })

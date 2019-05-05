@@ -126,14 +126,14 @@ export default {
     ...mapActions([
       'obtainToken'
     ]),
-    login () {
+    async login () {
       if (this.validateData()) {
         this.isChecking = true
         const payload = {
           username: this.username,
           password: this.password
         }
-        this.obtainToken(payload)
+        await this.obtainToken(payload)
         this.isChecking = false
       }
     },
